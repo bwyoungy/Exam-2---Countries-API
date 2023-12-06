@@ -66,7 +66,7 @@
         html += `<p>Average population: ${Math.floor(totalPopulation / searchResults.length)}</p>`;
 
         // Add table detailing population per country
-        html += getCountryPopulationsTable(searchResults);
+        html += getCountryStatisticsTable(searchResults);
 
         // Add line break for display
         html += "<br>";
@@ -79,7 +79,7 @@
     }
 
     /* Function to calculate the total population of a collection of countries */
-    /* Paramater: countriesList - a collection of country objects. The objects need to have a property named "population" */
+    /* Paramater: countriesList - a collection of country objects */
     /* Returns: Sum of populations of countries */
     function sumTotalPopulation(countriesList) {
         // Initialise total population counter as 0
@@ -92,23 +92,34 @@
 
     }
 
-    /* Function to get a table detailing population per country */
-    /* Paramater: countriesList - a collection of country objects. The objects need to have a property named "population" */
-    /* Returns: HTML code - A detailed table with each row showing country name and population */
-    function getCountryPopulationsTable(countriesList) {
+    /* Function to get a table detailing a country and statistics about it - population per documentation and currency(ies) per bonus */
+    /* Paramater: countriesList - a collection of country objects  */
+    /* Returns: HTML code - A detailed table with each row showing country name, population, and currency(ies) used */
+    function getCountryStatisticsTable(countriesList) {
         // Initialise HTML string with opening table tag, table header, and opening table body tag
         let htmlTable = `<table>
                             <thead>
                                 <th>Country name</th>
                                 <th>Population</th>
+                                <th>Currency(ies)</th>
                             </thead>
                             <tbody>`;
 
         // Iterate  over list of countries and add table row for each one
         for (const country of countriesList) {
+            // Initialise currenciesArr variable as an array with one item with a default value
+            // for cases where the API doesn't hold information for currencies field (such as Antarctica)
+            let currenciesArr = ["No currency used"];
+            
+            // Make sure there exists a currencies field for country iterated (not all have)
+            // If there is, save currencies to array variable
+            // We are using the array format for cases where there is more than one currency (such as Namibia or Cuba)
+            if (country.currencies !== undefined) currenciesArr = Object.values(country.currencies).map(item => item.name);
+
             htmlTable += `<tr>
                             <td>${country.name.official}</td>
                             <td>${country.population}</td>
+                            <td>${currenciesArr.join(", ")}</td>
                         </tr>`;
         }
 
@@ -120,7 +131,7 @@
     }
 
     /* Function to get a table showing number of countries per region */
-    /* Paramater: countriesList - a collection of country objects. The objects need to have a property named "region" */
+    /* Paramater: countriesList - a collection of country objects */
     /* Returns: HTML code - A table with each row showing region and number of countries in it */
     function getRegionsTable(countriesList) {
         // Initialise HTML string with opening table tag, table header, and opening table body tag
