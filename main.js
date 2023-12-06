@@ -65,6 +65,9 @@
         // Add average population of countries found
         html += `<p>Average population: ${Math.floor(totalPopulation / searchResults.length)}</p>`;
 
+        // Add table detailing population per country
+        html += getCountryPopulationsTable(searchResults);
+
         // Display search results on HTML page
         displayObj.innerHTML = html;
     }
@@ -81,5 +84,32 @@
 
         return totalPopulation;
 
+    }
+
+    /* Function to get a table detailing population per country */
+    /* Paramater: countriesList - a collection of country objects. The objects need to have a property named "population" */
+    /* Returns: HTML code - A detailed table with each row showing country name and population */
+    function getCountryPopulationsTable(countriesList) {
+        // Initialise HTML string with opening table tag, table header, and opening table body tag
+        let htmlTable = `<table>
+                            <thead>
+                                <th>Country name</th>
+                                <th>Population</th>
+                            </thead>
+                            <tbody>`;
+
+        // Iterate  over list of countries and add table row for each one
+        for (const country of countriesList) {
+            htmlTable += `<tr>
+                            <td>${country.name.official}</td>
+                            <td>${country.population}</td>
+                        </tr>`;
+        }
+
+        //Close table body tag and table tag
+        htmlTable += `</tbody>
+                    </table>`;
+
+        return htmlTable;
     }
 })()
