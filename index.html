@@ -10,16 +10,20 @@
 <body>
     <h1>Welcome to the World Countries API</h1>
 
+    <!-- Button to display all countries (empty string search) -->
     <button id="getAllBtn" data-searchterm="">Show all countries</button>
     <br>
+    <!-- Search box section -->
     <label for="searchBox">Search country: </label>
     <input type="text" id="searchBox">
+    <!-- Search type choice by common or official name -->
     <select id="searchType">
         <option value="common">(by common name)</option>
         <option value="official">(by official name)</option>
     </select>
     <button id="searchBtn" data-searchterm="">Go</button>
     <hr>
+    <!-- Empty div for use of JS code to display results -->
     <div id="countriesDisplay"></div>
 </body>
 </html>
