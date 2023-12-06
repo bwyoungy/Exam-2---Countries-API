@@ -37,8 +37,12 @@
         // Set searchterm data of search button as the search input box value for easy access later to searchterm
         searchBtnObj.dataset.searchterm = document.getElementById("searchBox").value;
 
-        // Get array of search results filtering each country's official name by the searchterm, converting both to lowercase to avoid mismatch due to case differences
-        let searchResults = countriesArr.filter(country=>country.name.official.toLowerCase().includes(this.dataset.searchterm.toLowerCase()));
+        // Save searchType chosen from select box
+        let searchType = document.getElementById("searchType").value;
+
+        // Get array of search results filtering each country's name by the searchterm, converting both to lowercase to avoid mismatch due to case differences
+        // (using eval to prevent code duplication and unnecessary conditions)
+        let searchResults = countriesArr.filter(country=>eval(`country.name.${searchType}.toLowerCase().includes(this.dataset.searchterm.toLowerCase())`));
 
         // Check if no countries were found
         if (searchResults.length === 0) {
@@ -47,8 +51,6 @@
             // Exit searchCountries function
             return;
         }
-
-        console.log(searchResults);
 
         // Initialise HTML info with header
         let html = "<h2>Search results: </h2>";
@@ -66,7 +68,7 @@
         html += `<p>Average population: ${Math.floor(totalPopulation / searchResults.length)}</p>`;
 
         // Add table detailing population per country
-        html += getCountryStatisticsTable(searchResults);
+        html += getCountriesStatisticsTable(searchResults,searchType);
 
         // Add line break for display
         html += "<br>";
@@ -85,7 +87,7 @@
     }
 
     /* Function to calculate the total population of a collection of countries */
-    /* Paramater: countriesList - a collection of country objects */
+    /* Parameter: countriesList - a collection of country objects */
     /* Returns: Sum of populations of countries */
     function sumTotalPopulation(countriesList) {
         // Initialise total population counter as 0
@@ -99,9 +101,10 @@
     }
 
     /* Function to get a table detailing a country and statistics about it - population per documentation and currency(ies) per bonus */
-    /* Paramater: countriesList - a collection of country objects  */
+    /* Parameter: countriesList - a collection of country objects  */
+    /* Parameter: nameDisplay - which name to show in table */
     /* Returns: HTML code - A detailed table with each row showing country name, population, and currency(ies) used */
-    function getCountryStatisticsTable(countriesList) {
+    function getCountriesStatisticsTable(countriesList,nameDisplay) {
         // Initialise HTML string with opening table tag, table header, and opening table body tag
         let htmlTable = `<table>
                             <thead>
@@ -114,7 +117,7 @@
         // Iterate  over list of countries and add table row for each one
         for (const country of countriesList) {
             htmlTable += `<tr>
-                            <td>${country.name.official}</td>
+                            <td>${eval(`country.name.${nameDisplay}`)}</td>
                             <td>${country.population}</td>
                             <td>${getCurrenciesOfCountry(country).join(", ")}</td>
                         </tr>`;
@@ -144,7 +147,7 @@
     }
 
     /* Function to get a table showing number of countries per region */
-    /* Paramater: countriesList - a collection of country objects */
+    /* Parameter: countriesList - a collection of country objects */
     /* Returns: HTML code - A table with each row showing region and number of countries in it */
     function getRegionsTable(countriesList) {
         // Initialise HTML string with opening table tag, table header, and opening table body tag
@@ -188,7 +191,7 @@
     }
 
     /* Function to get a table showing number of countries using each currency */
-    /* Paramater: countriesList - a collection of country objects */
+    /* Parameter: countriesList - a collection of country objects */
     /* Returns: HTML code - A table with each row showing currency and number of countries using it */
     function getCurrenciesTable(countriesList) {
         // Initialise HTML string with opening table tag, table header, and opening table body tag

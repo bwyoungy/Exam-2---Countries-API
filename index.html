@@ -12,8 +12,12 @@
 
     <button id="getAllBtn" data-searchterm="">Show all countries</button>
     <br>
-    <label for="searchBox">Search by name: </label>
+    <label for="searchBox">Search country: </label>
     <input type="text" id="searchBox">
+    <select id="searchType">
+        <option value="common">(by common name)</option>
+        <option value="official">(by official name)</option>
+    </select>
     <button id="searchBtn" data-searchterm="">Go</button>
     <hr>
     <div id="countriesDisplay"></div>
