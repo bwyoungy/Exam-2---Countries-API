@@ -21,7 +21,7 @@
             const response = await fetch("https://restcountries.com/v3.1/all");
             const countriesAPI = await response.json();
 
-            // Iterate over the countries from API and save to global array
+            // Iterate over the countries from API and add each one to global array
             for (const country of countriesAPI) {
                 countriesArr.push(country);
             }
@@ -68,6 +68,12 @@
         // Add table detailing population per country
         html += getCountryPopulationsTable(searchResults);
 
+        // Add line break for display
+        html += "<br>";
+
+        // Add table detailing amount of countries per region
+        html += getRegionsTable(searchResults);
+
         // Display search results on HTML page
         displayObj.innerHTML = html;
     }
@@ -110,6 +116,50 @@
         htmlTable += `</tbody>
                     </table>`;
 
+        return htmlTable;
+    }
+
+    /* Function to get a table showing number of countries per region */
+    /* Paramater: countriesList - a collection of country objects. The objects need to have a property named "region" */
+    /* Returns: HTML code - A table with each row showing region and number of countries in it */
+    function getRegionsTable(countriesList) {
+        // Initialise HTML string with opening table tag, table header, and opening table body tag
+        let htmlTable = `<table>
+                            <thead>
+                                <th>Region</th>
+                                <th>Number of countries</th>
+                            </thead>
+                            <tbody>`;
+
+        // Initialise empty map to save number of countries (value) per region (key)
+        let regions = new Map();
+
+        // Iterate over list of countries and count amount in each region
+        for (const country of countriesList) {
+            // Initialise countries amount as none
+            let countriesAmount = 0;
+
+            // Check if regions map includes the region of the currently iterated country
+            // and if so, set countries amount as the number saved in the map
+            if (regions.has(country.region)) countriesAmount = regions.get(country.region);
+
+            // Add one to the current value in map of the currently iterated region and save in map
+            regions.set(country.region, countriesAmount + 1);
+        }
+
+        // Iterate over regions in map and add table row for each one
+        for (const region of regions.keys()) {
+            htmlTable += `<tr>
+                            <td>${region}</td>
+                            <td>${regions.get(region)}</td>
+                        </tr>`;
+        }
+
+        //Close table body tag and table tag
+        htmlTable += `</tbody>
+                    </table>`;
+
+        
         return htmlTable;
     }
 })()
