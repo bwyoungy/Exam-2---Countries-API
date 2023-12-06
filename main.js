@@ -74,6 +74,12 @@
         // Add table detailing amount of countries per region
         html += getRegionsTable(searchResults);
 
+        // Add line break for display
+        html += "<br>";
+
+        // Add table detailing amount of countries per currency
+        html += getCurrenciesTable(searchResults);
+
         // Display search results on HTML page
         displayObj.innerHTML = html;
     }
@@ -107,19 +113,10 @@
 
         // Iterate  over list of countries and add table row for each one
         for (const country of countriesList) {
-            // Initialise currenciesArr variable as an array with one item with a default value
-            // for cases where the API doesn't hold information for currencies field (such as Antarctica)
-            let currenciesArr = ["No currency used"];
-            
-            // Make sure there exists a currencies field for country iterated (not all have)
-            // If there is, save currencies to array variable
-            // We are using the array format for cases where there is more than one currency (such as Namibia or Cuba)
-            if (country.currencies !== undefined) currenciesArr = Object.values(country.currencies).map(item => item.name);
-
             htmlTable += `<tr>
                             <td>${country.name.official}</td>
                             <td>${country.population}</td>
-                            <td>${currenciesArr.join(", ")}</td>
+                            <td>${getCurrenciesOfCountry(country).join(", ")}</td>
                         </tr>`;
         }
 
@@ -128,6 +125,22 @@
                     </table>`;
 
         return htmlTable;
+    }
+
+    /* Function to get an array of currencies of a country */
+    /* Parameter: country - a country object */
+    /* Returns: An array of currencies of the country */
+    function getCurrenciesOfCountry(country) {
+        // Initialise currenciesArr variable as an array with one item with a default value
+            // for cases where the API doesn't hold information for currencies field (such as Antarctica)
+            let currenciesArr = ["No currency used"];
+            
+            // Make sure there exists a currencies field for country (not all have)
+            // If there is, save currencies to array variable
+            // We are using the array format for cases where there is more than one currency (such as Namibia or Cuba)
+            if (country.currencies !== undefined) currenciesArr = Object.values(country.currencies).map(item => item.name);
+
+            return currenciesArr
     }
 
     /* Function to get a table showing number of countries per region */
@@ -163,6 +176,53 @@
             htmlTable += `<tr>
                             <td>${region}</td>
                             <td>${regions.get(region)}</td>
+                        </tr>`;
+        }
+
+        //Close table body tag and table tag
+        htmlTable += `</tbody>
+                    </table>`;
+
+        
+        return htmlTable;
+    }
+
+    /* Function to get a table showing number of countries using each currency */
+    /* Paramater: countriesList - a collection of country objects */
+    /* Returns: HTML code - A table with each row showing currency and number of countries using it */
+    function getCurrenciesTable(countriesList) {
+        // Initialise HTML string with opening table tag, table header, and opening table body tag
+        let htmlTable = `<table>
+                            <thead>
+                                <th>Currency</th>
+                                <th>Number of countries</th>
+                            </thead>
+                            <tbody>`;
+
+        // Initialise empty map to save number of countries (value) per currency (key)
+        let currencies = new Map();
+
+        // Iterate over list of countries and count amount in each currency
+        for (const country of countriesList) {
+            // Iterate over currencies of the country iterated
+            for (const currency of getCurrenciesOfCountry(country)) {
+                // Initialise countries amount as none
+                let countriesAmount = 0;
+
+                // Check if currencies map includes the currency of the currently iterated country and currency
+                // and if so, set countries amount as the number saved in the map
+                if (currencies.has(currency)) countriesAmount = currencies.get(currency);
+
+                // Add one to the current value in map of the currently iterated currency and country and save in map
+                currencies.set(currency, countriesAmount + 1);
+            }
+        }
+
+        // Iterate over currencies in map and add table row for each one
+        for (const currency of currencies.keys()) {
+            htmlTable += `<tr>
+                            <td>${currency}</td>
+                            <td>${currencies.get(currency)}</td>
                         </tr>`;
         }
 
