@@ -62,10 +62,10 @@
         let totalPopulation = sumTotalPopulation(searchResults);
 
         // Add total population of countries found
-        html += `<p>Total countries population: ${totalPopulation}</p>`;
+        html += `<p>Total countries population: ${totalPopulation.toLocaleString()}</p>`;
 
         // Add average population of countries found
-        html += `<p>Average population: ${Math.floor(totalPopulation / searchResults.length)}</p>`;
+        html += `<p>Average population: ${Math.floor(totalPopulation / searchResults.length).toLocaleString()}</p>`;
 
         // Add table detailing population per country
         html += getCountriesStatisticsTable(searchResults,searchType);
@@ -118,7 +118,7 @@
         for (const country of countriesList) {
             htmlTable += `<tr>
                             <td>${eval(`country.name.${nameDisplay}`)}</td>
-                            <td>${country.population}</td>
+                            <td>${country.population.toLocaleString()}</td>
                             <td>${getCurrenciesOfCountry(country).join(", ")}</td>
                         </tr>`;
         }
